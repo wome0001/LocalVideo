@@ -1,0 +1,6 @@
+{
+  "name": "CosyVoice2-0.5B",
+  "repo": "FunAudioLLM/CosyVoice2-0.5B",
+  "revision": "eec1ae6c79877dbd9379285cf8789c9e0879293d",
+  "note": "Public model repository revision resolved when packaging; separate from private listening approvals"
+}

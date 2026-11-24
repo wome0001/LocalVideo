@@ -1,0 +1,14 @@
+{
+  "shots": [{
+    "id": "shot01", "attempt": "v1", "characters": ["A"], "scene": "doorway",
+    "action": "先看手中的钥匙，再看向画外的人；说完自然闭口，眼神有反应。",
+    "emotion": "松弛日常聊天", "shot_size": "近景", "camera": "固定镜头",
+    "dialogue": [{"role": "A", "text": "钥匙带了吗？"}],
+    "duration": 5.0625, "reference_id": "actor-a-doorway-v1",
+    "image": {"path": "../private/inputs/reference-832x480.png", "sha256": "AUTO"},
+    "audio": {"path": "../private/inputs/approved-window.wav", "sha256": "AUTO"},
+    "text_cache": {"path": "../private/inputs/text.safetensors", "sha256": "AUTO"},
+    "expected_frames": 81, "frame_window": 80, "fps": 16, "seed": 45,
+    "reuse_cpu_weights": false
+  }]
+}

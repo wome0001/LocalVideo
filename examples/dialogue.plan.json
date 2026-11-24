@@ -1,0 +1,22 @@
+{
+  "role_levels": {"A": -23.4, "B": -23.8},
+  "role_profiles": {
+    "A": {"highpass_hz": 75, "phone": false, "reflection": true},
+    "B": {"highpass_hz": 70, "phone": false, "reflection": true}
+  },
+  "scenes": [{
+    "id": 1,
+    "name": "doorway",
+    "beat": "两个人约好出门，一人确认，另一人边收东西边回应。",
+    "picture_in": 0,
+    "picture_out": 15,
+    "lead_seconds": 0.25,
+    "reflection_gain": 0.018,
+    "reflection_delay_ms": 11,
+    "lines": [
+      {"id": "line01", "kind": "tts", "role": "A", "text": "钥匙带了吗？", "direction": "看对方手里的东西，随口确认，疑问尾音轻轻上扬。", "rate": 1.02, "hold": 0.22},
+      {"id": "line02", "kind": "tts", "role": "B", "text": "带了，就在这儿。", "direction": "拿起钥匙给对方看，轻声短答，不刻意激动。", "rate": 1.04, "hold": 0.30},
+      {"id": "line03", "kind": "tts", "role": "A", "text": "好，那走吧。", "direction": "事情确认好了，顺势转身，收尾松弛。", "rate": 1.05, "hold": 0.25}
+    ]
+  }]
+}

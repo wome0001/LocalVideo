@@ -1,0 +1,193 @@
+"""Owned, offline ComfyUI runtime and immutable measurement of real inference.
+
+No system settings or existing production files are changed. One GPU queue only.
+"""
+from __future__ import annotations
+import argparse,asyncio,copy,hashlib,json,os,shutil,subprocess,sys,threading,time,uuid
+from datetime import datetime,timezone
+from pathlib import Path
+import aiohttp,psutil
+if sys.flags.optimize:raise RuntimeError('Do not use python -O: runtime contracts require assertions')
+
+VALIDATION_ONLY=@@VALIDATION_ONLY@@
+R=Path(@@PROJECT@@)
+W=Path(@@WORK@@)
+E=Path(@@HOT@@)
+MEDIA=Path(@@ARTIFACT@@)
+LIB=Path(@@MODELLIB@@)
+COMFY=Path(@@COMFYROOT@@)
+PLUGIN=Path(@@PLUGINROOT@@)
+os.environ['LOCALVIDEO_FFMPEG']=@@FFMPEG@@
+os.environ['LOCALVIDEO_FFPROBE']=@@FFPROBE@@
+PY=@@PYTHON@@
+PORT=@@PORT@@
+URL='http://127.0.0.1:'+str(PORT)
+sys.path.insert(0,str(R/'src/vendor'))
+from comfy_submit import request,inspect_media
+
+def now():return datetime.now(timezone.utc).isoformat()
+def read(p):return json.loads(Path(p).read_text(encoding='utf-8-sig'))
+def save(p,v):
+ p=Path(p);p.parent.mkdir(parents=True,exist_ok=True)
+ body=json.dumps(v,ensure_ascii=False,indent=2,allow_nan=False)
+ if p.name=='model-lock.json':
+  history=p.parent/'model-lock-snapshots';history.mkdir(exist_ok=True)
+  (history/(hashlib.sha256(body.encode('utf-8')).hexdigest()+'.json')).write_bytes(body.encode('utf-8'))
+ p.write_bytes(body.encode('utf-8'))
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def phase(name,**extra):
+ with (R/'provenance/phases.jsonl').open('a',encoding='utf-8') as f:
+  f.write(json.dumps({'utc':now(),'monotonic':time.monotonic(),'event':name,**extra},ensure_ascii=False)+'\n')
+def ensure():
+ for d in ['input','output','temp','user','logs','base/models','base/custom_nodes']:(W/d).mkdir(parents=True,exist_ok=True)
+ for d in ['provenance','provenance/jobs','workflows','research']:(R/d).mkdir(parents=True,exist_ok=True)
+ for d in ['renders/native','delivery']:(MEDIA/d).mkdir(parents=True,exist_ok=True)
+
+def stage(kind):
+ ensure();start=time.monotonic();phase('model_staging_start',kind=kind)
+ names=['vae/Wan2.1_VAE_official_fp32.pth','loras/lightx2v_T2V_14B_cfg_step_distill_v2_lora_rank64_bf16.safetensors']
+ names+=['diffusion_models/Wan2_2-S2V-14B_fp8_e4m3fn_scaled_KJ.safetensors','audio_encoders/wav2vec2_large_english_fp16.safetensors'] if kind=='s2v' else ['diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors','diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors','loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors','loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors']
+ records=[];index=R/'provenance/model-lock.json';prior=read(index) if index.exists() else {'models':[]};known={x['relative']:x for x in prior['models']}
+ for relative in names:
+  src=(LIB/relative).resolve();dst=(E/'models'/relative).resolve()
+  assert src.is_relative_to(LIB.resolve()) and dst.is_relative_to((E/'models').resolve())
+  meta=src.with_suffix('.verified.json');m=read(meta);expected=m.get('actual_sha256') or m['sha256'];assert m.get('verified') is True
+  if relative in known:
+   k=known[relative];assert Path(k['hot']).is_file() and Path(k['hot']).stat().st_size==k['bytes'] and sha(k['hot'])==expected
+   records.append(k);continue
+  assert shutil.disk_usage(E).free-src.stat().st_size>18*2**30,'Keep E headroom; never edit pagefile'
+  assert not dst.exists(),'Existing unowned hot copy must be inspected, never overwritten'
+  dst.parent.mkdir(parents=True,exist_ok=True);pending=dst.with_name(dst.name+'.staging');assert not pending.exists()
+  tick=time.monotonic();h=hashlib.sha256()
+  with src.open('rb') as f,pending.open('xb') as g:
+   while data:=f.read(8*1024*1024):h.update(data);g.write(data)
+  assert h.hexdigest()==expected,'Canonical F bytes mismatch; retain failed staging for investigation'
+  assert sha(pending)==expected;os.replace(pending,dst)
+  row={'relative':relative,'canonical':str(src),'hot':str(dst),'sha256':expected,'bytes':src.stat().st_size,'staging_seconds':time.monotonic()-tick,'verified_utc':now()}
+  records.append(row);known[relative]=row;save(index,{'models':list(known.values()),'scope':'Canonical streamed SHA and independent hot-copy SHA; once per run; no model inference'})
+  print('STAGED',relative,round(row['staging_seconds'],3),flush=True)
+ phase('model_staging_end',kind=kind,seconds=time.monotonic()-start)
+ # Extra model paths share permanent model names; E owns only verified hot copies.
+ (R/'workflows/extra-paths.yaml').write_text(f'optimized_hot:\n    base_path: {E.as_posix()}/models\n    is_default: true\n    diffusion_models: diffusion_models\n    audio_encoders: audio_encoders\n    vae: vae\n    loras: loras\noptimized_library:\n    base_path: {LIB.as_posix()}\n    diffusion_models: diffusion_models\n    audio_encoders: audio_encoders\n    text_encoders: text_encoders\n    vae: vae\n    loras: loras\noptimized_nodes:\n    custom_nodes: {COMFY.as_posix()}/custom_nodes\nprofile_nodes:\n    custom_nodes: {PLUGIN.as_posix()}\n',encoding='utf-8')
+
+def launch():
+ ensure();assert not any(c.status=='LISTEN' and c.laddr.port in [8191,8192,8193,PORT] for c in psutil.net_connections(kind='tcp')),'GPU service already running; inspect ownership'
+ env=dict(os.environ);env.update(PYTHONUTF8='1',PYTHONIOENCODING='utf-8',PYTHONUNBUFFERED='1',PYTHONDONTWRITEBYTECODE='1',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',TEMP=str(W/'temp'),TMP=str(W/'temp'),OMP_NUM_THREADS='6',MKL_NUM_THREADS='6')
+ for key,folder in [('HF_HOME','huggingface'),('TORCH_HOME','torch'),('CUDA_CACHE_PATH','cuda'),('TRITON_CACHE_DIR','triton')]:
+  p=E/'runtime'/folder;p.mkdir(parents=True,exist_ok=True);env[key]=str(p)
+ args=[PY,'main.py','--listen','127.0.0.1','--port',str(PORT),'--disable-auto-launch','--base-directory',str(W/'base'),'--extra-model-paths-config',str(R/'workflows/extra-paths.yaml'),'--offline','--disable-assets','--disable-all-custom-nodes','--whitelist-custom-nodes','ComfyUI-WanVideoWrapper','CreatorWanS2VNodes','--disable-xformers','--use-pytorch-cross-attention','--disable-dynamic-vram','--disable-async-offload','--disable-pinned-memory','--disable-comfy-compiler','--reserve-vram','3','--preview-method','none','--cache-classic','--input-directory',str(W/'input'),'--output-directory',str(W/'output'),'--temp-directory',str(W/'temp'),'--user-directory',str(W/'user')]
+ stamp=datetime.now().strftime('%Y%m%d_%H%M%S');out=W/f'logs/comfy-{stamp}-stdout.log';err=W/f'logs/comfy-{stamp}-stderr.log';tick=time.monotonic();phase('service_start')
+ with out.open('w',encoding='utf-8') as a,err.open('w',encoding='utf-8') as b:
+  p=subprocess.Popen(args,cwd=COMFY,env=env,stdout=a,stderr=b,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
+ save(W/'service.json',{'pid':p.pid,'arguments':args,'stdout':str(out),'stderr':str(err),'started_utc':now(),'create_time':psutil.Process(p.pid).create_time()})
+ deadline=time.monotonic()+180
+ while time.monotonic()<deadline:
+  assert p.poll() is None,'Service exited; read logs'
+  try:stats=request(URL,'/system_stats');break
+  except Exception:time.sleep(1)
+ else:
+  p.terminate();p.wait(30);phase('service_start_failed_owned_process_stopped',pid=p.pid)
+  raise TimeoutError('Service not ready; owned process stopped, logs retained')
+ phase('service_ready',seconds=time.monotonic()-tick,pid=p.pid);save(R/'provenance/service.json',{**read(W/'service.json'),'startup_seconds':time.monotonic()-tick,'system_stats':stats})
+ print('SERVICE_READY',p.pid,flush=True)
+
+class Monitor:
+ def __init__(self,client,path):self.client=client;self.path=path;self.stop=threading.Event();self.ready=threading.Event();self.error=None
+ async def watch(self):
+  try:
+   async with aiohttp.ClientSession() as s:
+    async with s.ws_connect(URL+'/ws',params={'clientId':self.client}) as ws:
+     self.ready.set()
+     with self.path.open('x',encoding='utf-8') as f:
+      while not self.stop.is_set():
+       try:m=await asyncio.wait_for(ws.receive(),.5)
+       except asyncio.TimeoutError:continue
+       if m.type==aiohttp.WSMsgType.TEXT:
+        f.write(json.dumps({'utc':now(),'monotonic_s':time.monotonic(),**json.loads(m.data)},ensure_ascii=False)+'\n');f.flush()
+       elif m.type in [aiohttp.WSMsgType.CLOSED,aiohttp.WSMsgType.ERROR]:
+        if not self.stop.is_set():self.error='Unexpected websocket close before monitor finish'
+        break
+  except BaseException as e:self.error=str(e);self.ready.set()
+ def start(self):
+  self.thread=threading.Thread(target=lambda:asyncio.run(self.watch()),daemon=True);self.thread.start();assert self.ready.wait(15) and not self.error,self.error
+ def finish(self):self.stop.set();self.thread.join(5);assert not self.error,self.error
+
+def run(ident,graph_path,free=False):
+ import re
+ assert ident and re.fullmatch(r'[A-Za-z0-9_-]{1,64}',ident),'Invalid unique run ID'
+ ensure();graph_path=Path(graph_path);g=read(graph_path);p=R/f'provenance/jobs/{ident}.json';assert not p.exists(),'Version every attempt; never overwrite evidence'
+ assert not (W/'stop-requested').exists(),'Stop requested'
+ q=request(URL,'/queue');assert not q['queue_running'] and not q['queue_pending']
+ service=read(W/'service.json');owner=psutil.Process(service['pid']);assert owner.create_time()==service['create_time'],'Service PID birth changed';assert str(W).lower().replace('\\','/') in ' '.join(owner.cmdline()).lower().replace('\\','/'),'Ownership mismatch'
+ inputs=[]
+ for n in g.values():
+  if n['class_type'] in ['LoadImage','LoadAudio']:
+   name=n['inputs'].get('image') or n['inputs'].get('audio');f=(W/'input'/name).resolve();assert f.is_relative_to((W/'input').resolve()) and f.is_file();inputs.append({'path':str(f),'sha256':sha(f),'node_class':n['class_type'],'relative_name':name})
+ free_evidence=None
+ if free:
+  # /free is asynchronous; allow worker to reset the executor before /prompt.
+  import urllib.request
+  tick=time.monotonic();before_free=request(URL,'/system_stats');req=urllib.request.Request(URL+'/free',data=b'{"unload_models":true,"free_memory":true}',headers={'Content-Type':'application/json'})
+  with urllib.request.urlopen(req,timeout=30) as response:assert response.status==200
+  time.sleep(2);free_evidence={'before':before_free,'after':request(URL,'/system_stats'),'seconds':time.monotonic()-tick,'completion_proof':'Require loader node1 in subsequent actual executing events; HTTP200/sleep alone is not reset proof'};phase('free_before',ident=ident,**free_evidence)
+ client=uuid.uuid4().hex;mon=Monitor(client,R/f'provenance/jobs/{ident}-nodes.jsonl');mon.start();tick=time.monotonic();phase('job_start',ident=ident,workflow_sha256=sha(graph_path),free_before=free)
+ start_stats={'physical_available_gib':psutil.virtual_memory().available/2**30,'pagefile_used_percent':psutil.swap_memory().percent};log=R/f'provenance/jobs/{ident}-runner.log';telemetry=R/f'provenance/jobs/{ident}-telemetry.jsonl';submit_receipt=R/f'provenance/jobs/{ident}-receipt.json'
+ with log.open('x',encoding='utf-8') as output,telemetry.open('x',encoding='utf-8') as samples:
+  proc=subprocess.Popen([PY,'-B',str(R/'src/vendor/comfy_submit.py'),str(graph_path),'--url',URL,'--client-id',client,'--input-dir',str(W/'input'),'--output-dir',str(W/'output'),'--report',str(submit_receipt),'--expected-width','832','--expected-height','480','--timeout','1800','--poll-interval','.25'],stdout=output,stderr=subprocess.STDOUT,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
+  deadline=time.monotonic()+1850
+  while proc.poll() is None:
+   sample={'utc':now(),'monotonic_s':time.monotonic(),'physical_available_gib':psutil.virtual_memory().available/2**30}
+   try:
+    procs=[owner,*owner.children(recursive=True)];sample['rss_gib']=sum(v.memory_info().rss for v in procs if v.is_running())/2**30
+    line=subprocess.check_output(['nvidia-smi','--query-gpu=memory.used,utilization.gpu,temperature.gpu,power.draw','--format=csv,noheader,nounits'],text=True,timeout=7,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0)).strip().splitlines()[0]
+    a,b,c,d=map(float,line.split(','));sample.update(gpu_used_mib=a,gpu_util_pct=b,gpu_temperature_c=c,gpu_power_w=d)
+   except Exception as e:sample['sample_error']=str(e)
+   samples.write(json.dumps(sample)+'\n');samples.flush()
+   if time.monotonic()>deadline:
+    proc.terminate();proc.wait(15)
+    save(W/'stop-requested',{'reason':'Submitter deadline exceeded; inspect live service before resuming','ident':ident,'service_pid':service['pid']})
+    break
+   time.sleep(2)
+  code=proc.returncode
+ mon.finish();elapsed=time.monotonic()-tick;phase('job_end',ident=ident,exit_code=code,seconds=elapsed)
+ data=read(submit_receipt) if submit_receipt.exists() else {};all_events=[json.loads(s) for s in mon.path.read_text(encoding='utf-8').splitlines()];events=[v for v in all_events if v.get('data',{}).get('prompt_id')==data.get('prompt_id')]
+ sampler_ids={str(k) for k,v in g.items() if v['class_type']=='WanVideoSampler'}
+ assert sampler_ids,'This runner requires actual WanVideoSampler execution'
+ steps=[v for v in events if v.get('type')=='progress' and str(v.get('data',{}).get('node')) in sampler_ids and v.get('data',{}).get('max') in [2,4]]
+ boundaries=[v for v in events if v.get('type') in ['execution_start','execution_success']];executed=[v['data']['node'] for v in events if v.get('type')=='executing' and v.get('data',{}).get('node')]
+ cached={str(n) for e in events if e.get('type')=='execution_cached' for n in e['data'].get('nodes',[])}
+ progress_checks={}
+ for node in sampler_ids:
+  inp=g[node]['inputs'];start=inp.get('start_step',0);end=inp.get('end_step',inp['steps']);end=inp['steps'] if end<0 else end;count=min(inp['steps'],end)-start
+  actual={v['data']['value'] for v in steps if str(v['data']['node'])==node and v['data']['max']==count}
+  progress_checks[node]={'expected_step_count':count,'actual_values':sorted(actual),'executed':node in executed,'cached':node in cached,'passed':set(range(1,count+1)).issubset(actual) and node in executed and node not in cached}
+ submitted_graph=data.get('history',{}).get('prompt',[None,None,None])[2]
+ model_nodes={str(k) for k,v in g.items() if v['class_type']=='WanVideoModelLoader'}
+ valid=code==0 and data.get('state')=='success' and submitted_graph==g and len(boundaries)==2 and all(v['passed'] for v in progress_checks.values()) and (not free or model_nodes.issubset(set(executed)))
+ record={'status':'generated_self_checked_pending_independent_review' if valid else 'execution_or_freshness_check_failed','ident':ident,'workflow':str(graph_path),'workflow_sha256':sha(graph_path),'inputs':inputs,'client_id':client,'free_before':free,'free_evidence':free_evidence,'submitter_wall_seconds':elapsed,'start_stats':start_stats,'exit_code':code,'receipt':str(submit_receipt),'sampler_progress':[(v['data'].get('node'),v['data'].get('value'),v['data'].get('max')) for v in steps],'sampler_checks':progress_checks,'executed_nodes':executed,'cached_nodes':sorted(cached),'event_model_seconds':boundaries[-1]['monotonic_s']-boundaries[0]['monotonic_s'] if len(boundaries)==2 else None}
+ record.update(prompt_id=data.get('prompt_id'),actual_graph_matches=submitted_graph==g,model_lock_sha256=sha(R/'provenance/model-lock.json'),runtime_source_sha256=sha(__file__),submitter_source_sha256=sha(R/'src/vendor/comfy_submit.py'))
+ record['comparison_settings']={'input_content':sorted((x['node_class'],x['sha256']) for x in inputs),'model_files':{x['relative']:x['sha256'] for x in read(R/'provenance/model-lock.json')['models']},'sampler':{node:g[node]['inputs'] for node in sorted(sampler_ids)},'geometry':g['8']['inputs'],'fps':g['16']['inputs']['fps'],'text_sha256':g['12']['inputs']['expected_sha256'],'precision':g['1']['inputs'],'lora':g['21']['inputs']}
+ save(p,record)
+ if valid:
+  v=[v for v in data['outputs'] if v['media']['kind']=='video'];assert len(v)==1
+  src=Path(v[0]['path']);assert sha(src)==v[0]['sha256'];dest=MEDIA/f'renders/native/{ident}.mp4';assert not dest.exists();shutil.copyfile(src,dest);assert sha(dest)==v[0]['sha256'];record.update(output=str(dest),output_sha256=sha(dest),media=v[0]['media'])
+ save(p,record);print(json.dumps(record,ensure_ascii=True),flush=True)
+ assert valid,(ident,code,progress_checks,'Inspect preserved raw evidence before any versioned retry')
+
+def stop():
+ s=read(W/'service.json');p=psutil.Process(s['pid']);assert p.create_time()==s['create_time'],'Service PID reuse';assert str(W).lower().replace('\\','/') in ' '.join(p.cmdline()).lower().replace('\\','/')
+ q=request(URL,'/queue');assert not q['queue_running'] and not q['queue_pending'],'Cannot stop during active work'
+ children=p.children(recursive=True)
+ for child in children:child.terminate()
+ _,alive=psutil.wait_procs(children,timeout=15)
+ assert not alive,'Owned children still exiting; do not claim released'
+ p.terminate();p.wait(30);phase('service_stopped',pid=s['pid'])
+
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['stage','launch','run','stop']);p.add_argument('--kind',choices=['s2v'],default='s2v');p.add_argument('--id');p.add_argument('--graph');p.add_argument('--free',action='store_true');a=p.parse_args()
+ assert not VALIDATION_ONLY,'Validation-only runtime cannot stage/start/submit/stop GPU jobs'
+ if a.action=='stage':stage(a.kind)
+ elif a.action=='launch':launch()
+ elif a.action=='run':run(a.id,a.graph,a.free)
+ else:stop()

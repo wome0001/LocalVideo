@@ -1,0 +1,17 @@
+{
+  "scope": "Selected historical package observations, not a complete cross-platform lock or a guarantee of available wheels",
+  "wan_windows": {
+    "python": "3.12.10",
+    "torch": "2.7.1+cu128",
+    "torchvision": "0.22.1+cu128",
+    "torchaudio": "2.7.1+cu128",
+    "numpy": "2.5.5",
+    "safetensors": "0.8.0",
+    "transformers": "4.57.3",
+    "diffusers": "0.35.2",
+    "sageattention": "2.2.0+cu128torch2.7.1.post3",
+    "triton-windows": "3.3.1.post21"
+  },
+  "svd": {"torch": "2.7.1+cu128", "diffusers": "0.35.2"},
+  "cosyvoice2_frontend_observed": {"python": "3.12.10", "numpy": "1.26.4", "soundfile": "0.12.1", "transformers": "4.51.3", "onnxruntime": "1.18.0", "note": "Use a separate engine environment and upstream-compatible matching torch/torchaudio pair; do not copy a mixed site-packages directory"}
+}

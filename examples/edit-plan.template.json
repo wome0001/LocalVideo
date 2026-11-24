@@ -1,0 +1,10 @@
+{
+  "roots": {"temporary": "/your/temporary", "media": "/your/media", "metadata": "/your/metadata"},
+  "work": "/your/temporary/assembly-v1", "output": "/your/media/edit-v1.mp4", "receipt": "/your/metadata/edit-v1.json", "fps": 16,
+  "clips": [{
+    "video": {"path": "../private/inputs/native.mp4", "sha256": "AUTO"},
+    "audio": {"path": "../private/inputs/approved-window.wav", "sha256": "AUTO"},
+    "video_filter": "trim=start=0:end=5.0625,setpts=PTS-STARTPTS,setsar=1,format=yuv420p,fps=16",
+    "frames": 81, "audio_start": 0, "audio_end": 5.0625
+  }]
+}

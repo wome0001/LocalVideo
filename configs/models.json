@@ -1,0 +1,45 @@
+{
+  "description": "Exact hashes of historically measured Wan profile; no weights included. Source revisions resolved when packaging.",
+  "files": [
+    {
+      "relative": "diffusion_models/Wan2_2-S2V-14B_fp8_e4m3fn_scaled_KJ.safetensors",
+      "bytes": 16653330620,
+      "sha256": "01c50f3f368880d2aadcbcee4466e74fa14c228b03b23863827baf3e110e26d4",
+      "url": "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/033a4e487f60220b3d6e469599a6aebc46e13cee/S2V/Wan2_2-S2V-14B_fp8_e4m3fn_scaled_KJ.safetensors",
+      "upstream_model_card": "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled",
+      "license_scope": "Read upstream model card and license before downloading/use; not relicensed by LocalVideo"
+    },
+    {
+      "relative": "audio_encoders/wav2vec2_large_english_fp16.safetensors",
+      "bytes": 630997322,
+      "sha256": "f0017a43ea57ef6b3d4866be607844bbd8cada6d30966f7d70044ed0d63d3f9e",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/5df3a4a3ed0628002308022198249dbbbd045d09/split_files/audio_encoders/wav2vec2_large_english_fp16.safetensors",
+      "upstream_model_card": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged",
+      "license_scope": "Read upstream model card and license before downloading/use; not relicensed by LocalVideo"
+    },
+    {
+      "relative": "vae/Wan2.1_VAE_official_fp32.pth",
+      "bytes": 507609880,
+      "sha256": "38071ab59bd94681c686fa51d75a1968f64e470262043be31f7a094e442fd981",
+      "url": "https://huggingface.co/Wan-AI/Wan2.2-S2V-14B/resolve/dab4e9c55bbe4c8c4d03db1c2c98c7f0ac9c454b/Wan2.1_VAE.pth",
+      "upstream_model_card": "https://huggingface.co/Wan-AI/Wan2.2-S2V-14B",
+      "license_scope": "Read upstream model card and license before downloading/use; not relicensed by LocalVideo"
+    },
+    {
+      "relative": "loras/lightx2v_T2V_14B_cfg_step_distill_v2_lora_rank64_bf16.safetensors",
+      "bytes": 630697104,
+      "sha256": "37d49218544b9e0bfb8e831d1399f451fbc5068aff6474f42a90c928363c3573",
+      "url": "https://huggingface.co/Kijai/WanVideo_comfy/resolve/8260d429d19fd7a72304cad059160b95d843913f/Lightx2v/lightx2v_T2V_14B_cfg_step_distill_v2_lora_rank64_bf16.safetensors",
+      "upstream_model_card": "https://huggingface.co/Kijai/WanVideo_comfy",
+      "license_scope": "Read upstream model card and license before downloading/use; not relicensed by LocalVideo"
+    },
+    {
+      "relative": "text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "bytes": 6735906897,
+      "sha256": "c3355d30191f1f066b26d93fba017ae9809dce6c627dda5f6a66eaa651204f68",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/d6258323e18f14c60d37899da97ca555f3118259/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "upstream_model_card": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged",
+      "license_scope": "Read upstream model card and license before downloading/use; not relicensed by LocalVideo"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "groups": {
+    "baseline": ["/your/metadata/baseline-warm-01.json", "/your/metadata/baseline-warm-02.json"],
+    "optimized": ["/your/metadata/optimized-warm-01.json", "/your/metadata/optimized-warm-02.json"]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "upstreams": [
+    {
+      "name": "ComfyUI",
+      "url": "https://github.com/Comfy-Org/ComfyUI",
+      "commit": "c5751c81abe131202eea9e4c66d000589013dd0b",
+      "tracked_files_clean": true,
+      "note": "Source installation reference; model/PyTorch/attention environments are separate"
+    },
+    {
+      "name": "WanVideoWrapper",
+      "url": "https://github.com/kijai/ComfyUI-WanVideoWrapper",
+      "commit": "a7439db30bed0c5b5fa437d77ae8a7bb220dfd00",
+      "tracked_files_clean": true,
+      "note": "Source installation reference; model/PyTorch/attention environments are separate"
+    },
+    {
+      "name": "CosyVoice",
+      "url": "https://github.com/QwenAudio/CosyVoice",
+      "commit": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc",
+      "tracked_files_clean": true,
+      "note": "Source installation reference; model/PyTorch/attention environments are separate"
+    },
+    {
+      "name": "FreeVideo",
+      "url": "https://github.com/FlashML-org/FreeVideo",
+      "commit": "500207cb63dc002e74cd268fe39639ae8747d2ef",
+      "tracked_files_clean": true,
+      "note": "Source installation reference; model/PyTorch/attention environments are separate"
+    }
+  ]
+}

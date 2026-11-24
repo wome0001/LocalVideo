@@ -1,0 +1,185 @@
+{
+  "date": "2026-11-24",
+  "unit_note": "GiB=2^30 bytes; GB=10^9 bytes. Logical file size, not VRAM, allocated clusters or peak temp space. Group totals overlap; do not add component rows to total rows.",
+  "models": [
+    {
+      "model": "Wan component: diffusion_models/Wan2_2-S2V-14B_fp8_e4m3fn_scaled_KJ.safetensors",
+      "logical_bytes": 16653330620,
+      "files": 1,
+      "basis": "Exact downloadable file SHA/bytes in models.json",
+      "GiB": 15.51,
+      "GB_decimal": 16.653
+    },
+    {
+      "model": "Wan component: audio_encoders/wav2vec2_large_english_fp16.safetensors",
+      "logical_bytes": 630997322,
+      "files": 1,
+      "basis": "Exact downloadable file SHA/bytes in models.json",
+      "GiB": 0.588,
+      "GB_decimal": 0.631
+    },
+    {
+      "model": "Wan component: vae/Wan2.1_VAE_official_fp32.pth",
+      "logical_bytes": 507609880,
+      "files": 1,
+      "basis": "Exact downloadable file SHA/bytes in models.json",
+      "GiB": 0.473,
+      "GB_decimal": 0.508
+    },
+    {
+      "model": "Wan component: loras/lightx2v_T2V_14B_cfg_step_distill_v2_lora_rank64_bf16.safetensors",
+      "logical_bytes": 630697104,
+      "files": 1,
+      "basis": "Exact downloadable file SHA/bytes in models.json",
+      "GiB": 0.587,
+      "GB_decimal": 0.631
+    },
+    {
+      "model": "Wan component: text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "logical_bytes": 6735906897,
+      "files": 1,
+      "basis": "Exact downloadable file SHA/bytes in models.json",
+      "GiB": 6.273,
+      "GB_decimal": 6.736
+    },
+    {
+      "model": "Wan2.2-S2V complete five-file profile",
+      "logical_bytes": 25158541823,
+      "files": 5,
+      "basis": "Includes shared VAE, UMT5, audio encoder and LoRA; permanent original only, excludes hot copy/output",
+      "GiB": 23.431,
+      "GB_decimal": 25.159
+    },
+    {
+      "model": "Wan S2V four-file staged hot set",
+      "logical_bytes": 18422634926,
+      "files": 4,
+      "basis": "Additional to permanent library when stage copies models; text encoding is a separate process; plus 18GiB free headroom required by runtime",
+      "GiB": 17.157,
+      "GB_decimal": 18.423
+    },
+    {
+      "model": "LTX-2.3 historical download set",
+      "logical_bytes": 38979586280,
+      "files": 2,
+      "basis": "Exact selected file metadata; excludes runtime/output/cache and other model versions",
+      "GiB": 36.303,
+      "GB_decimal": 38.98
+    },
+    {
+      "model": "SVD-XT historical fp16 directory",
+      "logical_bytes": 4509208849,
+      "files": 11,
+      "basis": "Selected exact model snapshot files; excludes optional spatial VAE",
+      "GiB": 4.2,
+      "GB_decimal": 4.509
+    },
+    {
+      "model": "SVD optional spatial VAE",
+      "logical_bytes": 334643823,
+      "files": 2,
+      "basis": "Optional historical decode comparison; not needed by default svd_generate.py",
+      "GiB": 0.312,
+      "GB_decimal": 0.335
+    },
+    {
+      "model": "FreeVideo stored h3-base",
+      "logical_bytes": 11021193831,
+      "files": 15,
+      "basis": "Historical stored pool; prepared includes multiple representations, not the minimum single-run requirement",
+      "GiB": 10.264,
+      "GB_decimal": 11.021
+    },
+    {
+      "model": "FreeVideo stored stage-dmd-step-250",
+      "logical_bytes": 49312,
+      "files": 5,
+      "basis": "Historical stored pool; prepared includes multiple representations, not the minimum single-run requirement",
+      "GiB": 0.0,
+      "GB_decimal": 0.0
+    },
+    {
+      "model": "FreeVideo stored encoder",
+      "logical_bytes": 15687142551,
+      "files": 1,
+      "basis": "Historical stored pool; prepared includes multiple representations, not the minimum single-run requirement",
+      "GiB": 14.61,
+      "GB_decimal": 15.687
+    },
+    {
+      "model": "FreeVideo stored latent_upscaler",
+      "logical_bytes": 690592672,
+      "files": 1,
+      "basis": "Historical stored pool; prepared includes multiple representations, not the minimum single-run requirement",
+      "GiB": 0.643,
+      "GB_decimal": 0.691
+    },
+    {
+      "model": "FreeVideo stored sampling-cache",
+      "logical_bytes": 145220800,
+      "files": 100,
+      "basis": "Historical stored pool; prepared includes multiple representations, not the minimum single-run requirement",
+      "GiB": 0.135,
+      "GB_decimal": 0.145
+    },
+    {
+      "model": "FreeVideo stored prepared",
+      "logical_bytes": 22929329625,
+      "files": 278,
+      "basis": "Historical stored pool; prepared includes multiple representations, not the minimum single-run requirement",
+      "GiB": 21.355,
+      "GB_decimal": 22.929
+    },
+    {
+      "model": "FreeVideo whole historical model/cache pool",
+      "logical_bytes": 50473546395,
+      "files": 401,
+      "basis": "Includes original and prepared formats; not a required minimum, installer may reuse/select a subset",
+      "GiB": 47.007,
+      "GB_decimal": 50.474
+    },
+    {
+      "model": "ContentV-8B complete snapshot",
+      "logical_bytes": 27788913196,
+      "files": 30,
+      "basis": "Official snapshot metadata at 40c0e022a2b997448a6a7f89c67df735b540e3e6; model weights and repo side files",
+      "GiB": 25.88,
+      "GB_decimal": 27.789
+    },
+    {
+      "model": "CosyVoice2-0.5B installed model directory",
+      "logical_bytes": 5616074425,
+      "files": 22,
+      "basis": "Read-only installed-directory measurement; excludes engine/venv/voice references; skipped aliases=0",
+      "GiB": 5.23,
+      "GB_decimal": 5.616
+    },
+    {
+      "model": "MuseTalk observed model-resource directory",
+      "logical_bytes": 6757304142,
+      "files": 13,
+      "weight_bytes": 3885779872,
+      "basis": "Installed bundle observation, not minimum required space; exact full version set not locked. Weight-only GiB=3.619",
+      "GiB": 6.293,
+      "GB_decimal": 6.757
+    },
+    {
+      "model": "GPT-SoVITS observed model-resource directory",
+      "logical_bytes": 1101658571,
+      "files": 9,
+      "weight_bytes": 1101386971,
+      "basis": "Installed bundle observation, not minimum required space; exact full version set not locked. Weight-only GiB=1.026",
+      "GiB": 1.026,
+      "GB_decimal": 1.102
+    },
+    {
+      "model": "LatentSync-1.6 observed model-resource directory",
+      "logical_bytes": 5482439039,
+      "files": 6,
+      "weight_bytes": 5482437847,
+      "basis": "Installed bundle observation, not minimum required space; exact full version set not locked. Weight-only GiB=5.106",
+      "GiB": 5.106,
+      "GB_decimal": 5.482
+    }
+  ]
+}

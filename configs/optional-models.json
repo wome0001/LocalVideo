@@ -1,0 +1,155 @@
+{
+  "note": "Public file metadata only; no private paths or weights. Confirm upstream license and any gated access.",
+  "files": [
+    {
+      "route": "LTX-2.3-historical",
+      "relative": "checkpoints/ltx-2.3-22b-distilled-fp8.safetensors",
+      "repo": "Lightricks/LTX-2.3-fp8",
+      "revision": "91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d",
+      "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d/ltx-2.3-22b-distilled-fp8.safetensors",
+      "bytes": 29531884062,
+      "sha256": "d9646b6f2d5c42d337b23671634c43bfeece6989644f51b4a3aa088465ccd3b2",
+      "installation": "Place under the matching Comfy model folder; see docs/routes/ltx-contentv.md"
+    },
+    {
+      "route": "LTX-2.3-historical",
+      "relative": "text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+      "repo": "Comfy-Org/ltx-2",
+      "revision": "ccde4ba417d7900669fd56dd292a883cee11ff37",
+      "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/ccde4ba417d7900669fd56dd292a883cee11ff37/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+      "bytes": 9447702218,
+      "sha256": "aaca463d11e6d8d2a4bdb0d6299214c15ef78a3f73e0ef8113d5a9d0219b3f6d",
+      "installation": "Place under the matching Comfy model folder; see docs/routes/ltx-contentv.md"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/LICENSE.md",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/LICENSE.md",
+      "bytes": 11852,
+      "sha256": "d6f6b1a4dce5c852bd6d7d9482d002baf0ccdb71e662250b73be9eec8764ee8d",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/README.md",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/README.md",
+      "bytes": 8156,
+      "sha256": "0513cc8b8da0aff30c91dbc899babe4d411e2d0ac68b8a0aff40103e1489c6b1",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/feature_extractor/preprocessor_config.json",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/feature_extractor/preprocessor_config.json",
+      "bytes": 518,
+      "sha256": "4db495644e3e5bd8fcac52f70e7fc0b413c911086021acf73ac30e5911166e95",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/image_encoder/config.json",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/image_encoder/config.json",
+      "bytes": 685,
+      "sha256": "65da4496f116d2b297fe864e0f31242fbc57e26a5d95b93310f2034e1e90d0ec",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/image_encoder/model.fp16.safetensors",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/image_encoder/model.fp16.safetensors",
+      "bytes": 1264217240,
+      "sha256": "ae616c24393dd1854372b0639e5541666f7521cbe219669255e865cb7f89466a",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/model_index.json",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/model_index.json",
+      "bytes": 496,
+      "sha256": "9119b8837600736ae38009c5dc80c76112307cb2d229a2cfb477d54c329ff53d",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/scheduler/scheduler_config.json",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/scheduler/scheduler_config.json",
+      "bytes": 533,
+      "sha256": "59aa43afc33395efd40fe94c7369c0477b81698f4b65b63e3ae06f26269876d5",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/unet/config.json",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/unet/config.json",
+      "bytes": 984,
+      "sha256": "9c44e614afa89887aeeeae3113ba73a53fabacbc545ae1237c44c99d0e80fb54",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/unet/diffusion_pytorch_model.fp16.safetensors",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/unet/diffusion_pytorch_model.fp16.safetensors",
+      "bytes": 3049435868,
+      "sha256": "9fbc02e90f37d422f5e3a4aeaee95f6629dc8c45ca211b951626e930daf2bddf",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/vae/config.json",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/vae/config.json",
+      "bytes": 607,
+      "sha256": "8f34272db69f7e2c615da6142ca3f9fdcd7b682bcfd903ceb15035fea79a8303",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "model/vae/diffusion_pytorch_model.fp16.safetensors",
+      "repo": "stabilityai/stable-video-diffusion-img2vid-xt",
+      "revision": "9e43909513c6714f1bc78bcb44d96e733cd242aa",
+      "url": "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/9e43909513c6714f1bc78bcb44d96e733cd242aa/vae/diffusion_pytorch_model.fp16.safetensors",
+      "bytes": 195531910,
+      "sha256": "af602cd0eb4ad6086ec94fbf1438dfb1be5ec9ac03fd0215640854e90d6463a3",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "spatial-vae/config.json",
+      "repo": "stabilityai/sd-vae-ft-mse",
+      "revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+      "url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/config.json",
+      "bytes": 547,
+      "sha256": "92d3dfb746fca211a2c9e019e285f8597412211728dce3c5bcf4eda0f2d62e7e",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    },
+    {
+      "route": "SVD-XT-historical",
+      "relative": "spatial-vae/diffusion_pytorch_model.safetensors",
+      "repo": "stabilityai/sd-vae-ft-mse",
+      "revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+      "url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/diffusion_pytorch_model.safetensors",
+      "bytes": 334643276,
+      "sha256": "a1d993488569e928462932c8c38a0760b874d166399b14414135bd9c42df5815",
+      "installation": "Preserve downloaded repository layout; spatial VAE is historical optional comparison, not required by svd_generate.py"
+    }
+  ]
+}

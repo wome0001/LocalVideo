@@ -1,0 +1,4 @@
+{
+  "A": {"name": "adult-woman", "reference_audio": "../private/voices/actor-a.wav", "reference_sha256": "AUTO", "reference_text": "填写你获授权参考录音的精确原文。", "consent_confirmed": false},
+  "B": {"name": "adult-man", "reference_audio": "../private/voices/actor-b.wav", "reference_sha256": "AUTO", "reference_text": "填写另一角色参考录音的精确原文。", "consent_confirmed": false}
+}

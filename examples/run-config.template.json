@@ -1,0 +1,14 @@
+{
+  "project": "/your/metadata/shot-test-001",
+  "artifact_root": "/your/media/shot-test-001",
+  "work": "/your/temporary/shot-test-001",
+  "hot": "/your/hot/shot-test-001",
+  "model_library": "/your/models/wan22",
+  "comfy_root": "/your/tools/ComfyUI",
+  "comfy_python": "/your/tools/comfy-env/bin/python",
+  "plugin_root": "/your/tools/localvideo-nodes",
+  "ffmpeg": "ffmpeg",
+  "ffprobe": "ffprobe",
+  "port": 8193,
+  "validation_only": false
+}
