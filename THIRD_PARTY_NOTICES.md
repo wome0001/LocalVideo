@@ -16,6 +16,8 @@ MIT in this repository covers LocalVideo's original orchestration code, agent sk
 | LivePortrait | Portrait animation | [Official source](https://github.com/KwaiVGI/LivePortrait); check any external face-analysis model licenses too |
 | MuseTalk / LatentSync | Optional local lip sync | [MuseTalk](https://github.com/TMElyralab/MuseTalk), [LatentSync](https://github.com/bytedance/LatentSync) |
 | Blender / FFmpeg | Procedural scenes and assembly | [Blender license](https://www.blender.org/about/license/), [FFmpeg license](https://ffmpeg.org/legal.html); FFmpeg build options affect its license |
+| 67.js / Node.js | Optional UI and scripted animation | [67.js](https://github.com/codepawl/67.js), [Node.js](https://nodejs.org/); exact npm package metadata is recorded in configs/67js-package.json |
+| LibreOffice / PyMuPDF / Noto CJK | Optional slides and text rendering | Follow the official project licenses linked in docs/RESOURCES.md; no slides, rendered pages or fonts are bundled |
 | PyTorch / Diffusers / NumPy / SciPy / SoundFile / aiohttp / psutil | Runtime dependencies | Each installed package retains its own license and notices |
 
 Pinned installed-source references are recorded in [upstreams.lock.json](configs/upstreams.lock.json). They describe the historical implementation; newer `main` versions are not automatically equivalent. Model cards linked in the catalog are the place to check availability and permissions before use, especially for commercial projects.

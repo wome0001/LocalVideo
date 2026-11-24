@@ -77,7 +77,7 @@
 |资源|下载入口|安装配置|
 |---|---|---|
 |Blender 4.5系列|[官方](https://www.blender.org/download/)、[历史版本目录](https://download.blender.org/release/Blender4.5/)|解压或安装到自选tools；命令行可用blender，Cycles按设备选OptiX/CUDA/CPU；Eevee独立配置|
-|67.js|[源码](https://github.com/codepawl/67.js)、[官方文档](https://67js.codepawl.com)、[npm](https://www.npmjs.com/package/@codepawlhq/67js)|Node独立项目：历史依赖`npm install @codepawlhq/67js@0.19.0`；按文档构建动画，版本API可能变更；不承诺其能替代真人表演|
+|67.js|[源码](https://github.com/codepawl/67.js)、[官方文档](https://67js.codepawl.com)、[npm](https://www.npmjs.com/package/@codepawlhq/67js)、[0.19.0直接下载](https://registry.npmjs.org/@codepawlhq/67js/-/67js-0.19.0.tgz)|Node独立项目：历史依赖`npm install @codepawlhq/67js@0.19.0`；固定包地址和registry完整性值见configs/67js-package.json；按文档构建动画，版本API可能变更；不承诺其能替代真人表演|
 |Node.js|[官方](https://nodejs.org/en/download)|仅UI脚本/67.js需要，安装LTS并核node/npm，勿把用户token放进npm项目|
 |LibreOffice课件转换|[官方下载](https://www.libreoffice.org/download/download-libreoffice/)|headless导PDF→按页渲染→本地TTS解释→FFmpeg，详见slides-ui路线；自备有权使用的PPT|
 |PDF页渲染|[PyMuPDF文档](https://pymupdf.readthedocs.io/en/latest/installation.html)|独立环境pip安装PyMuPDF，按其许可使用；不随仓库转发课件图片|
@@ -89,3 +89,5 @@
 人像/角色参考、克隆声线、剧本、已审对白和作品不提供下载地址，这是公开范围的明确限制。可用自己的授权照片/录音，或用本仓库Blender程序化产品图进行非人物链路试验。没有参考授权就不能完整复现同一个人；这里不提供所谓“替代私有素材”的下载绕过方式。
 
 每个资源保存下载来源、实际revision、许可、大小与SHA；缺项则写未验证。官方下架、鉴权/许可未获批或ABI无可用构建时，记录阻塞，不把另一个同名资源当成相同字节。所有流程边界见 REPRODUCIBILITY。
+
+发布前自动链接核验中，Blender官网入口/许可页和npm前端页对自动请求返回403，浏览器可达性未验证；未将其写为404或下载成功。Blender可另看已列出的官方历史版本目录和[官方源码许可](https://github.com/blender/blender/blob/main/COPYING)；67.js可用已核的官方registry版本接口/包地址与npm安装命令，不依赖前端页面打开。
