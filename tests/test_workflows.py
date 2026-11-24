@@ -69,7 +69,7 @@ class WorkflowTests(unittest.TestCase):
             manifest.write_text(json.dumps({'groups':groups}),encoding='utf8');return run('-m','localvideo','benchmark',manifest)
         p=check({'baseline':paths[:2],'optimized':paths[2:]});self.assertEqual(p.returncode,0,p.stderr)
         p=check({'baseline':[paths[0],paths[0]],'optimized':paths[2:]});self.assertNotEqual(p.returncode,0)
-        data=json.loads(Path(paths[3]).read_text());data['submitter_wall_seconds']=float('nan');Path(paths[3]).write_text(json.dumps(data))
+        data=json.loads(Path(paths[3]).read_text(encoding='utf8'));data['submitter_wall_seconds']=float('nan');Path(paths[3]).write_text(json.dumps(data),encoding='utf8')
         self.assertNotEqual(check({'baseline':paths[:2],'optimized':paths[2:]}).returncode,0)
 
     def test_hash_lock_and_unconsented_voice_rejection(self):
@@ -99,7 +99,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(p.returncode,0,p.stdout+p.stderr)
         p=run('-m','localvideo','dialogue-check',dest/'dialogue-audition.wav',dest/'dialogue-audition.srt')
         self.assertEqual(p.returncode,0,p.stdout+p.stderr)
-        self.assertEqual(len(json.loads((dest/'timeline.json').read_text())['dialogue_scenes'][0]['cues']),3)
+        self.assertEqual(len(json.loads((dest/'timeline.json').read_text(encoding='utf8'))['dialogue_scenes'][0]['cues']),3)
 
     def test_privacy_negative(self):
         base=self.base/'privacy';base.mkdir();(base/'bad.txt').write_text('gh'+'p_'+'x'*36)
